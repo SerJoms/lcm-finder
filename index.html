@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LCM Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 60px;
+    }
+    input {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Least Common Multiple (LCM) Finder</h1>
+  <p>Enter numbers separated by commas (e.g., 4, 6, 8)</p>
+
+  <input type="text" id="numberInput" placeholder="Enter numbers here">
+  <br>
+  <button onclick="findLCM()">Find LCM</button>
+
+  <div id="result"></div>
+
+  <script>
+    function gcd(a, b) {
+      return b === 0 ? a : gcd(b, a % b);
+    }
+
+    function lcm(a, b) {
+      return Math.abs(a * b) / gcd(a, b);
+    }
+
+    function findLCM() {
+      const input = document.getElementById("numberInput").value;
+      const numbers = input.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+
+      if (numbers.length < 2) {
+        document.getElementById("result").innerHTML = "Please enter at least two valid numbers.";
+        return;
+      }
+
+      let result = numbers[0];
+      for (let i = 1; i < numbers.length; i++) {
+        result = lcm(result, numbers[i]);
+      }
+
+      document.getElementById("result").innerHTML = `LCM: ${result}`;
+    }
+  </script>
+
+</body>
+</html>
