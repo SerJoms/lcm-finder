@@ -2,65 +2,120 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>LCM Finder</title>
+  <title>LCM & GCF Finder</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      background-color: #2e2e2e;
+      color: #f0f0f0;
+      font-family: 'Courier New', Courier, monospace;
       text-align: center;
-      margin-top: 60px;
+      padding-top: 60px;
+      background-image: url('https://www.transparenttextures.com/patterns/black-board.png');
+    }
+    h1 {
+      color: #90ee90;
+      text-shadow: 1px 1px #000;
     }
     input {
       padding: 10px;
       width: 300px;
       font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
     }
     button {
       padding: 10px 20px;
       font-size: 16px;
       margin-top: 10px;
+      background-color: #006400;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    #result {
+    button:hover {
+      background-color: #228b22;
+    }
+    .output {
       margin-top: 20px;
-      font-size: 20px;
-      color: green;
+      font-size: 18px;
+      color: #ffffff;
+      background-color: rgba(0,0,0,0.4);
+      padding: 15px;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .step {
+      color: #90ee90;
     }
   </style>
 </head>
 <body>
 
-  <h1>Least Common Multiple (LCM) Finder</h1>
-  <p>Enter numbers separated by commas (e.g., 4, 6, 8)</p>
-
-  <input type="text" id="numberInput" placeholder="Enter numbers here">
+  <h1>LCM & GCF Finder</h1>
+  <p>Enter numbers separated by commas (e.g., 12, 18, 24)</p>
+  <input type="text" id="numberInput" placeholder="Enter numbers">
   <br>
-  <button onclick="findLCM()">Find LCM</button>
+  <button onclick="calculate()">Calculate</button>
 
-  <div id="result"></div>
+  <div id="result" class="output"></div>
 
   <script>
     function gcd(a, b) {
-      return b === 0 ? a : gcd(b, a % b);
+      if (!b) return a;
+      return gcd(b, a % b);
+    }
+
+    function gcfOfList(numbers) {
+      let result = numbers[0];
+      for (let i = 1; i < numbers.length; i++) {
+        result = gcd(result, numbers[i]);
+      }
+      return result;
     }
 
     function lcm(a, b) {
       return Math.abs(a * b) / gcd(a, b);
     }
 
-    function findLCM() {
+    function lcmOfList(numbers, steps) {
+      let result = numbers[0];
+      for (let i = 1; i < numbers.length; i++) {
+        const prev = result;
+        result = lcm(result, numbers[i]);
+        steps.push(`LCM of ${prev} and ${numbers[i]} = ${result}`);
+      }
+      return result;
+    }
+
+    function calculate() {
       const input = document.getElementById("numberInput").value;
-      const numbers = input.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+      const numbers = input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+      const output = document.getElementById("result");
+      output.innerHTML = '';
 
       if (numbers.length < 2) {
-        document.getElementById("result").innerHTML = "Please enter at least two valid numbers.";
+        output.innerHTML = "Please enter at least two valid numbers.";
         return;
       }
 
-      let result = numbers[0];
-      for (let i = 1; i < numbers.length; i++) {
-        result = lcm(result, numbers[i]);
-      }
+      const lcmSteps = [];
+      const lcmResult = lcmOfList(numbers, lcmSteps);
+      const gcfResult = gcfOfList(numbers);
 
-      document.getElementById("result").innerHTML = `LCM: ${result}`;
+      output.innerHTML += `<div><strong>Numbers:</strong> ${numbers.join(', ')}</div>`;
+      output.innerHTML += `<div><strong>Greatest Common Factor (GCF):</strong> ${gcfResult}</div>`;
+      output.innerHTML += `<div><strong>Least Common Multiple (LCM):</strong> ${lcmResult}</div>`;
+
+      output.innerHTML += `<div class="step"><strong>Step-by-step for LCM:</strong><ul>`;
+      lcmSteps.forEach(step => {
+        output.innerHTML += `<li>${step}</li>`;
+      });
+      output.innerHTML += `</ul></div>`;
     }
   </script>
 
